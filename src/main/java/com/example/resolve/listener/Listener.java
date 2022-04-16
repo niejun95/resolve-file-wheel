@@ -12,7 +12,7 @@ public abstract class Listener {
     /**
      *
      */
-    public abstract void invoke();
+    public abstract void invoke(Object object);
 
     public abstract void invokeHead();
 

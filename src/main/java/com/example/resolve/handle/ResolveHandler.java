@@ -2,10 +2,11 @@ package com.example.resolve.handle;
 
 import com.example.resolve.listener.Listener;
 
-import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 /**
  * @author : niejun
@@ -14,17 +15,17 @@ import java.util.List;
  **/
 public abstract class ResolveHandler<T> {
 
-    public List<Listener> list = new ArrayList<Listener>(10);
+    public List<Object> result = new ArrayList<>(10);
+
+    public List<Listener> listenerList = new ArrayList<Listener>(10);
 
     public String filePath;
 
     public Class clazz;
 
+    public Map<Integer, Field> fieldSetMap = new TreeMap<Integer, Field>();
 
-    public abstract List<Object> doSyncHandler() throws InvocationTargetException, IOException, IllegalAccessException, InstantiationException, NoSuchMethodException;
-
-    public abstract void doAsyncHandler();
-
+    public abstract List<Object> doHandler() throws Exception;
 
     public String getFilePath() {
         return filePath;
@@ -35,14 +36,18 @@ public abstract class ResolveHandler<T> {
     }
 
     public void addListener(Listener listener) {
-        list.add(listener);
+        listenerList.add(listener);
     }
 
     public void addListener(List<Listener> list) {
-        this.list.addAll(list);
+        this.listenerList.addAll(list);
     }
 
     public void registClass(Class clazz) {
         this.clazz = clazz;
+    }
+
+    public List<Object> getResult() {
+        return result;
     }
 }

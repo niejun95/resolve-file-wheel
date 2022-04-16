@@ -1,73 +1,29 @@
-package com.example.resolve.handle.impl;
+package com.example.util;
 
 import com.example.annotation.Property;
-import com.example.resolve.handle.ResolveHandler;
-import com.example.util.StringUpper;
 
-import java.io.*;
 import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
-import java.util.*;
-import java.util.logging.Logger;
-import java.util.stream.Collectors;
+import java.util.Date;
+import java.util.Map;
+import java.util.TreeMap;
 
 /**
- * @ClassName DefaultResolveHandler
- * @Author niejun
- * @Date 2022/4/15
- * @Description:
- * @Version 1.0
+ * @author : niejun
+ * @Description: TODO
+ * @date Date : 2022年04月16日 20:07
  **/
-public class DefaultResolveHandler<T> extends ResolveHandler<T> {
+public class ResolveUtils {
 
-    private java.util.logging.Logger logger = Logger.getLogger(this.getClass().getName());
+    public static Map<Integer, Field> fieldSetMap = new TreeMap<Integer, Field>();
 
-    private List<Object> list;
-
-    private Map<Integer, Field> fieldSetMap = new TreeMap<Integer, Field>();
-
-    public DefaultResolveHandler() {
-
-    }
-
-    @Override
-    public List<Object> doSyncHandler() throws InvocationTargetException, IOException, IllegalAccessException, InstantiationException, NoSuchMethodException {
-        list = new ArrayList<>(10);
-        String[] arr = null;
-        String contentLine = null;
-        getAnnotationField();
-
-        File file = new File(filePath);
-        FileReader reader = new FileReader(file);
-        BufferedReader br = new BufferedReader(reader);
-        while ((contentLine = br.readLine()) != null) {
-            Object obj = clazz.newInstance();
-            arr = contentLine.split("\\|");
-            for (int index = 0; index < arr.length; index++) {
-                Field field = fieldSetMap.get(index);
-                String fieldSetName = spliceSetMethod(field.getName());
-                Method fieldSetMet = clazz.getMethod(fieldSetName, field.getType());
-                fieldSetMet.invoke(obj, getFieldTypeValue(field, arr[index]));
-            }
-            list.add(obj);
-        }
-        return list;
-
-    }
-
-    @Override
-    public void doAsyncHandler() {
-
-    }
-
-    public void getAnnotationField() {
+    public static Map<Integer, Field> getAnnotationField(Class clazz) {
+        fieldSetMap.clear();
         Field[] fields = clazz.getDeclaredFields();
         for (Field field : fields) {
             String fieldName = field.getName();
@@ -76,10 +32,9 @@ public class DefaultResolveHandler<T> extends ResolveHandler<T> {
                 Integer id = annotation.id();
                 fieldSetMap.put(id, field);
             }
-
         }
+        return fieldSetMap;
     }
-
 
     /**
      * 将值转化为属性的类型
@@ -87,7 +42,7 @@ public class DefaultResolveHandler<T> extends ResolveHandler<T> {
      * @param value
      * @return
      */
-    public Object getFieldTypeValue(Field field, Object value){
+    public static Object getFieldTypeValue(Field field, Object value){
         if(null == field || null == value || "".equals(value)) return null;
         String fieldType = field.getType().getSimpleName();
         if ("String".equals(fieldType)) return String.valueOf(value);
@@ -135,6 +90,4 @@ public class DefaultResolveHandler<T> extends ResolveHandler<T> {
         return splicePropertyMethod(fieldName, "set");
 
     }
-
-
 }

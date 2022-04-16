@@ -1,6 +1,6 @@
-package com.example.resolve.base;
+package com.example.resolve.config;
 
-import com.example.resolve.process.ResolveBuilder;
+import com.example.resolve.config.ResolveBuilder;
 import com.example.resolve.listener.Listener;
 
 /**
