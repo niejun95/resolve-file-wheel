@@ -1,7 +1,7 @@
 package com.example.resolve.base;
 
 import com.example.resolve.process.ResolveBuilder;
-import com.example.resolve.process.ResolveListener;
+import com.example.resolve.listener.Listener;
 
 /**
  * @ClassName ResolveFactory
@@ -24,7 +24,7 @@ public class ResolveFactory {
         return read(filePath, clazz, null);
     }
 
-    public static ResolveBuilder read(String filePath, Class clazz, ResolveListener listener) {
+    public static ResolveBuilder read(String filePath, Class clazz, Listener listener) {
         ResolveBuilder builder = new ResolveBuilder();
         builder.file(filePath);
         builder.head(clazz);
